@@ -12,26 +12,6 @@ host = s[0]
 
 isProcessing = True
 
-admin_page = 'No se encuentra'
-def load():
-	print '/ \r'
-	load()
-
-def find_admin():
-	f = open("admin")
-	lines=f.read()
-	explode=lines.split('\n');
-	i=0
-	for e in explode:
-		print 'Calculando admin: ' + str(i) + ' de ' + str(len(explode)) +  " \r",
-		is_admin = urllib.urlopen(host+e)
-		if is_admin.getcode() == 200:
-			print '\n'
-			admin_page = host+e
-			print admin_page
-			break
-		i+=1
-
 coreExtendOld=[]
 theFuckingURLs=[]
 formsResources=[]
@@ -113,12 +93,11 @@ def re_analyzer(host):
 	isProcessing=False
 	return pushForNew
 
-find_admin()
 
 gs=re_analyzer(host)
 
 
-html = '<b>'+admin_page+'</b><br>'
+html = '<h1>'+host+'</h1><br>'
 html += "<h2>Enlaces--</h2>"
 for h in gs['host']:
 	html += '<a href="'+h+'">'+h +'</a><br>'
