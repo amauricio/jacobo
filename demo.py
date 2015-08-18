@@ -37,11 +37,9 @@ theFuckingURLs=[]
 formsResources=[]
 forms=[]
 externalURLs=[]
-
 styleResources=[]
 scriptResources=[]
 imageResources=[]
-
 pushForNew={};
 
 def complete_url(url):
@@ -66,32 +64,24 @@ def getUrlFromScript(myUrlToScript):
 	return fs
 
 def re_analyzer(host):
-
 	pushForNew['js'] = {}
-
 	print 'Analizando sitio...\n'
-
 	response = urllib.urlopen(host)
 	html = response.read()
 	new_html= html
-
 	newrsx = re.findall(r'((href|src)=(\'|\"))((http(s?):\/\/)?[a-zA-Z\:\/\.\?\=0-9\_\%\&\;\-]+)',new_html);
 	print str(len(newrsx)) + ' enlaces encontrados'
-
 	forms = re.findall(r'((action)=(\'|\"))((http(s?):\/\/)?[a-zA-Z\:\/\.\?\=0-9\_\%\&\;\-]+)',new_html);
 	print str(len(forms)) + ' form encontrados'
-
 	#for init get url home
 	for k in newrsx:
 		theFuckingURLs.append(k[3])
 	for f in forms:
 		formsResources.append(complete_url(f[3]))
-
 	urls = theFuckingURLs
 	for u in urls:
 		newhost = complete_url(u)
 		u=newhost
-
 		h=host.replace('http://www.', 'http://').replace('http://', '')
 		ifIsLocal = u.find(h)
 		if ifIsLocal==-1:
@@ -123,9 +113,7 @@ def re_analyzer(host):
 	isProcessing=False
 	return pushForNew
 
-
 find_admin()
-
 
 gs=re_analyzer(host)
 
