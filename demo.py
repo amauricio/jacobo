@@ -97,33 +97,33 @@ def re_analyzer(host):
 gs=re_analyzer(host)
 
 
-html = '<h1>'+host+'</h1><br>'
+html = '<h1>'+host+'</h1><br>\n'
 html += "<h2>Enlaces--</h2>"
 for h in gs['host']:
-	html += '<a href="'+h+'">'+h +'</a><br>'
+	html += '<a href="'+h+'">'+h +'</a><br>\n'
 
-html += "<h2>Forms--</h2>"
+html += "<h2>Forms--</h2>\n"
 for f in gs['forms']:
-	html += '<a href="'+f+'">'+f +'</a><br>'
+	html += '<a href="'+f+'">'+f +'</a><br>\n'
 
-html += "<h2>Externos--</h2>"
+html += "<h2>Externos--</h2>\n"
 for h in gs['ex']:
-	html += '<a href="'+h+'">'+h +'</a><br>'
+	html += '<a href="'+h+'">'+h +'</a><br>\n'
 
-html += "<h2>Estilos-- </h2>"
+html += "<h2>Estilos-- </h2>\n"
 for h in gs['css']:
-	html += '<a href="'+h+'">'+h +'</a><br>'
-html += "<h2>Scripts--</h2>"
+	html += '<a href="'+h+'">'+h +'</a><br>\n'
+html += "<h2>Scripts--</h2>\n"
 
 for n in gs['js']:
-	html += '<a href="'+n+'">'+n +'</a><br>'
+	html += '<a href="'+n+'">'+n +'</a><br>\n'
 	if len(gs['js'][n])>0:
 		html += '<blockquote>'
 		html += '<ul>'
 		for g in gs['js'][n]:
-			html += 'Enlaces dentro<br>'
+			html += 'Enlaces dentro<br>\n'
 			html += '<li>'
-			html += '<a href="'+g+'">'+g +'</a><br>'
+			html += '<a href="'+g+'">'+g +'</a><br>\n'
 			html += '</li>'
 		html += '</ul>'
 open("cat.html","w");
