@@ -2,8 +2,8 @@
 ##
 # wcgs 0.1.1-alpha
 # release date:24/09/2016
-# author: amaurcio
-## $> python wcgs.py -u http://misitioweb.com
+# author: amauricio
+## $> python jacobo.py -u http://misitioweb.com
 
 ##pip install requests
 ###################################################
