@@ -1,5 +1,4 @@
 # JACOBO
-------
 Simple webcrawler desarrollado en python.
 
 Jacobo obtiene, enlaces en un sitio web que incluyen:
