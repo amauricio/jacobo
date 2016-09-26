@@ -146,7 +146,7 @@ print ' e   88 88   8 88   e 8    8 88     8 8    8'
 print ' 8eee88 88   8 88eee8 8eeee8 88eeeee8 8eeee8'
 print ' --'
 print ' -- web crawler --'
-print ' -- [GITHUB] https://github.com/amauricio/wcgs --'
+print ' -- [GITHUB] https://github.com/amauricio/jacobo --'
 print '\n'
 
 print '[*] TARGET : ' + host
