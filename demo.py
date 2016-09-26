@@ -10,12 +10,11 @@
 
 import sys
 import re
-import urllib
-import getopt
-import time
-from optparse import OptionParser
 import urllib2
+from optparse import OptionParser
 import datetime
+import random
+from cookielib import CookieJar
 
 ## -- Options --##
 parser = OptionParser()
@@ -56,8 +55,19 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# User agents
+UA = [
+    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2049.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.67 Safari/537.36',
+    'Mozilla/5.0 (Windows; U; WinNT4.0; en-US; rv:1.2b) Gecko/20021029 Phoenix/0.4',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; AS; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/4.0; GTB7.4; InfoPath.3; SV1; .NET CLR 3.1.76908; WOW64; en-US)'
+]
 
-## -- Storage links --##
+# Storage links --##
 STORAGE = {
     'LINKS': [],
     'CSS': [],
@@ -110,7 +120,11 @@ def end():
 def request(url):
     log_info('GETTING: ' + url)
     try:
-        response = urllib.urlopen(url)
+        cj = CookieJar()
+        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+        req = urllib2.Request(url)
+        req.add_header('User-Agent', random.choice(UA))
+        response = opener.open(req)
         if (response.getcode() == 404):
             log_error('Status code : 404. Page not found')
             end()
@@ -166,7 +180,7 @@ def complete_url(url):
 
 def getUrlFromScript(myUrlToScript):
     fs = []
-    response = urllib.urlopen(myUrlToScript)
+    response = urllib2.urlopen(myUrlToScript)
     html = response.read()
     newrsx = re.findall(r'(url([\n\r\ \t])*?:)([\n\r\ \t])+?(\'|\")(([\/a-zA-Z0-9])+)(\'|\")', html);
     if len(newrsx) > 0:
