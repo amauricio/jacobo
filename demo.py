@@ -36,8 +36,9 @@ try:
     base_host = host
     action_pattern = r"\/\/(.+)\/([a-zA-Z\.\-\/]+)?"
     action = re.findall(action_pattern, host)
-    if (action[0][1] != ''):
-        base_host = base_host.replace('/' + action[0][1], '')
+    if (len(action) > 1):
+        if (action[0][1] != ''):
+            base_host = base_host.replace('/' + action[0][1], '')
 except:
     ##End if not parameters
     print 'Failed load options'
@@ -62,23 +63,15 @@ STORAGE = {
     'CSS': [],
     'JS': [],
     'FORMS': [],
-    'EXTERN': []
+    'EXTERNAL': [],
+    'IMAGES': [],
+    'MAILS': []
 }
 
 ## -- RegExpr -- ##
 re_linkTag = r'((href|src)=(\'|\"))((http(s?):\/\/)?[a-zA-Z\:\/\.\?\=0-9\_\%\&\;\-]+\.\w{2,5})'
 re_form = r'((action)=(\'|\"))((http(s?):\/\/)?[a-zA-Z\:\/\.\?\=0-9\_\%\&\;\-]+)'
-
-coreExtendOld = []
-theFuckingURLs = []
-formsResources = []
-forms = []
-externalURLs = []
-styleResources = []
-scriptResources = []
-imageResources = []
-pushForNew = {}
-
+re_mail = r'(([a-zA-Z0-9\_\.\-]+)@(.+\.\w{2,5}))'
 
 ##--Helpers--##
 def log(str_message):
@@ -155,7 +148,7 @@ print '-------------------------------------------------------------------------
 print ''
 
 
-## -- Detect if link is incomplete - add host base --##
+# Detect if link is incomplete - add host base --##
 def complete_url(url):
     first_char = url[0][0]
     if (url[:4] == 'http'):
@@ -186,55 +179,73 @@ def getUrlFromScript(myUrlToScript):
 def re_analyzer(host):
     log_ok('Starting...')
     new_html = real_host.read()
-    pushForNew['js'] = {}
-    ##--Get link based SRC|HREF -- ##
+
+    # Declare variables
+
+    push_js = []
+    push_css = []
+    push_images = []
+    push_external = []
+    push_general = []
+    push_forms = []
+    push_mails = []
+
+    theFuckingURLs = []
+
+    # Get link based SRC|HREF attribute
+    log_info('Obteniendo enlaces...')
     newrsx = re.findall(re_linkTag, new_html)
-    print str(len(newrsx)) + ' enlaces encontrados'
 
-    ##--Get link based ACTION -- ##
-    forms = re.findall(re_form, new_html)
-    print str(len(forms)) + ' form encontrados'
-
-    # for init get url home
     for k in newrsx:
         theFuckingURLs.append(k[3])
 
-    for f in forms:
-        formsResources.append(complete_url(f[3]))
+    # Get link based ACTION attribute
+    log_info('Obteniendo formularios...')
+    forms = re.findall(re_form, new_html)
 
-    urls = theFuckingURLs
-    for u in urls:
+    for k in forms:
+        push_forms.append(k[3])
+
+    # Get link based ACTION attribute
+    log_info('Obteniendo mails...')
+    mails = re.findall(re_mail, new_html)
+
+    for k in mails:
+        push_mails.append(k[0])
+
+    # for init get url home
+    for u in theFuckingURLs:
         newhost = complete_url(u)
         u = newhost
-    h = host.replace('http://www.', 'http://').replace('http://', '')
-    ifIsLocal = u.find(h)
-    if ifIsLocal == -1:
-        if u not in externalURLs:
-            externalURLs.append(u)
-    else:
-        if re.search(r"(.)*\.(jpg|png|gif|JPG|PNG|GIF)", u):
-            if u not in imageResources:
-                imageResources.append(u)
-        elif re.search(r"(.)*\.(js|JS)", u):
-            if u not in scriptResources:
-                scriptResources.append(u)
-                ins = getUrlFromScript(u)
-        elif re.search(r"(.)*\.(css|CSS)", u):
-            if u not in styleResources:
-                styleResources.append(u)
+        h = host.replace('http://www.', 'http://').replace('http://', '')
+        ifIsLocal = u.find(h)
+        if ifIsLocal == -1:
+            if u not in push_external:
+                push_external.append(u)
         else:
-            if u not in coreExtendOld:
-                coreExtendOld.append(u)
+            if re.search(r"(.)*\.(jpg|png|gif|JPG|PNG|GIF)", u):
+                if u not in push_images:
+                    push_images.append(u)
+            elif re.search(r"(.)*\.(js|JS)", u):
+                if u not in push_js:
+                    push_js.append(u)
+                    #ins = getUrlFromScript(u)
+            elif re.search(r"(.)*\.(css|CSS)", u):
+                if u not in push_css:
+                    push_css.append(u)
+            else:
+                if u not in push_css:
+                    push_general.append(u)
 
-    STORAGE['LINKS'] = coreExtendOld
-    STORAGE['EXTERNAL'] = externalURLs
-    STORAGE['CSS'] = styleResources
-    STORAGE['FORMS'] = formsResources
-    print str(len(styleResources)) + ' estilos encontrados'
-    print str(len(scriptResources)) + ' scripts encontrados'
-    print str(len(externalURLs)) + ' enlaces externos'
-    return pushForNew
+    STORAGE['LINKS'] = push_general
+    STORAGE['EXTERNAL'] = push_external
+    STORAGE['CSS'] = push_css
+    STORAGE['JS'] = push_js
+    STORAGE['FORMS'] = push_forms
+    STORAGE['IMAGES'] = push_images
+    STORAGE['MAILS'] = push_mails
 
+    return STORAGE
 
 gs = re_analyzer(host)
 
@@ -254,7 +265,14 @@ for h in STORAGE['EXTERNAL']:
 html += "<h2>Estilos-- </h2>\n"
 for h in STORAGE['CSS']:
     html += '<a href="' + h + '">' + h + '</a><br>\n'
-html += "<h2>Scripts--</h2>\n"
+
+html += "<h2>Scripts-- </h2>\n"
+for h in STORAGE['JS']:
+    html += '<a href="' + h + '">' + h + '</a><br>\n'
+
+html += "<h2>Mails-- </h2>\n"
+for h in STORAGE['MAILS']:
+    html += '<a href="' + h + '">' + h + '</a><br>\n'
 
 open("cat.html", "w");
 with open("cat.html", "a+") as f:
