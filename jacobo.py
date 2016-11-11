@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 ##
-# wcgs 0.1.1-alpha
+# jacobo 0.1.1-alpha
 # release date:24/09/2016
 # author: amauricio
 ## $> python jacobo.py -u http://misitioweb.com
