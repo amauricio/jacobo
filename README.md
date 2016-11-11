@@ -11,6 +11,6 @@ Jacobo obtiene, enlaces en un sitio web que incluyen:
 
 ### Uso
 ```
-$ python jacobo.py http://misitioweb.com
+$ python jacobo.py -u http://misitioweb.com
 ```
 Se generará el archivo cat.html
