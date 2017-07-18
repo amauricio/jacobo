@@ -5,7 +5,7 @@
 # author: amauricio
 ## $> python jacobo.py -u http://misitioweb.com
 
-##pip install requests
+##cat requeriments | sh
 ###################################################
 
 import sys
@@ -15,6 +15,7 @@ from optparse import OptionParser
 import datetime
 import random
 from cookielib import CookieJar
+
 
 ## -- Options --##
 parser = OptionParser()
@@ -28,13 +29,16 @@ parser.add_option("-A",
 (options, args) = parser.parse_args()
 
 ## -- Define Host and normalize --##
+
 try:
     host = options.url
     if host[len(host) - 1] == '/':
         host = host[:-1]
     base_host = host
+    print base_host
     action_pattern = r"\/\/(.+)\/([a-zA-Z\.\-\/]+)?"
     action = re.findall(action_pattern, host)
+    print action
     if (len(action) > 1):
         if (action[0][1] != ''):
             base_host = base_host.replace('/' + action[0][1], '')
@@ -44,16 +48,6 @@ except:
     sys.exit(0)
 
 
-## -- Colors -- ##
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 # User agents
 UA = [
@@ -84,57 +78,70 @@ re_form = r'((action)=(\'|\"))((http(s?):\/\/)?[a-zA-Z\:\/\.\?\=0-9\_\%\&\;\-]+)
 re_mail = r'(([a-zA-Z0-9\_\.\-]+)@(.+\.\w{2,5}))'
 
 ##--Helpers--##
-def log(str_message):
-    now = datetime.datetime.now()
-    print '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(now.second) + '][LOG] ' + str_message
-    sys.stdout.flush()
 
+## -- Colors -- ##
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+class Helper:
+    @staticmethod
+    def log(str_message):
+        now = datetime.datetime.now()
+        print '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(now.second) + '][LOG] ' + str_message
+        sys.stdout.flush()
 
-def log_info(str_message):
-    now = datetime.datetime.now()
-    print bcolors.OKBLUE + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
-        now.second) + '][INF]\t' + str_message + bcolors.ENDC
-    sys.stdout.flush()
+    @staticmethod
+    def log_info(str_message):
+        now = datetime.datetime.now()
+        print bcolors.OKBLUE + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
+            now.second) + '][INF]\t' + str_message + bcolors.ENDC
+        sys.stdout.flush()
+    
+    @staticmethod
+    def log_error(str_message):
+        now = datetime.datetime.now()
+        print bcolors.FAIL + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
+            now.second) + '][ERR]\t' + str_message + bcolors.ENDC
+        sys.stdout.flush()
 
+    @staticmethod
+    def log_ok(str_message):
+        now = datetime.datetime.now()
+        print bcolors.OKGREEN + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
+            now.second) + '][OK]\t' + str_message + bcolors.ENDC
+        sys.stdout.flush()
 
-def log_error(str_message):
-    now = datetime.datetime.now()
-    print bcolors.FAIL + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
-        now.second) + '][ERR]\t' + str_message + bcolors.ENDC
-    sys.stdout.flush()
+    @staticmethod
+    def end():
+        print '\n'
+        Helper.log('Exiting...')
+        sys.exit(0)
 
+    @staticmethod
+    def request(url):
+        Helper.log_info('GETTING: ' + url)
+        try:
+            cj = CookieJar()
+            opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+            req = urllib2.Request(url)
+            req.add_header('User-Agent', random.choice(UA))
+            response = opener.open(req)
+            if (response.getcode() == 404):
+                Helper.log_error('Status code : 404. Page not found')
+                Helper.end()
+            elif (response.getcode() == 200):
+                Helper.log_ok('GET: ' + url)
 
-def log_ok(str_message):
-    now = datetime.datetime.now()
-    print bcolors.OKGREEN + '[' + str(now.hour) + ':' + str(now.minute) + ':' + str(
-        now.second) + '][OK]\t' + str_message + bcolors.ENDC
-    sys.stdout.flush()
-
-
-def end():
-    print '\n'
-    log('Exiting...')
-    sys.exit(0)
-
-
-def request(url):
-    log_info('GETTING: ' + url)
-    try:
-        cj = CookieJar()
-        opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-        req = urllib2.Request(url)
-        req.add_header('User-Agent', random.choice(UA))
-        response = opener.open(req)
-        if (response.getcode() == 404):
-            log_error('Status code : 404. Page not found')
-            end()
-        elif (response.getcode() == 200):
-            log_ok('GET: ' + url)
-
-        return response
-    except Exception as e:
-        log_error(str(e))
-        end()
+            return response
+        except Exception as e:
+            Helper.log_error(str(e))
+            Helper.end()
 
 
 print '\n'
@@ -151,7 +158,7 @@ print '\n'
 
 print '[*] TARGET : ' + host
 print ''
-real_host = request(host)
+real_host = Helper.request(host)
 print ''
 print '#### HEADERS --------------------------------------------------------------------'
 print ''
@@ -174,7 +181,7 @@ def complete_url(url):
         mn = base_host + url[1:]
     else:
         mn = base_host + '/' + url
-    # log_info('TO: '+mn)
+    Helper.log_info('TO: '+mn)
     return mn
 
 
@@ -191,7 +198,7 @@ def getUrlFromScript(myUrlToScript):
 
 
 def re_analyzer(host):
-    log_ok('Starting...')
+    Helper.log_ok('Starting...')
     new_html = real_host.read()
 
     # Declare variables
@@ -207,21 +214,21 @@ def re_analyzer(host):
     theFuckingURLs = []
 
     # Get link based SRC|HREF attribute
-    log_info('Obteniendo enlaces...')
+    Helper.log_info('Obteniendo enlaces...')
     newrsx = re.findall(re_linkTag, new_html)
 
     for k in newrsx:
         theFuckingURLs.append(k[3])
 
     # Get link based ACTION attribute
-    log_info('Obteniendo formularios...')
+    Helper.log_info('Obteniendo formularios...')
     forms = re.findall(re_form, new_html)
 
     for k in forms:
         push_forms.append(k[3])
 
     # Get link based ACTION attribute
-    log_info('Obteniendo mails...')
+    Helper.log_info('Obteniendo mails...')
     mails = re.findall(re_mail, new_html)
 
     for k in mails:
