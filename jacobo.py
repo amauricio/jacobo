@@ -3,6 +3,9 @@
 # jacobo 0.1.1-alpha
 # release date:24/09/2016
 # author: amauricio
+
+
+
 ## $> python jacobo.py -u http://misitioweb.com
 
 ##cat requeriments | sh
@@ -11,45 +14,31 @@
 import sys
 import re
 import urllib2
-from optparse import OptionParser
 import datetime
 import random
 from cookielib import CookieJar
+import random
+from libs.log import Logging
+from app.main import JacoboMain
+
+FILES = {
+    'USER_AGENTS' :'txt/user-agents.txt'
+}
+
+SETTINGS = {
+    'DEFAULT_DEPTH' : 1
+}
+
+app = JacoboMain()
+app.set_files(FILES)
+app.set_settings(SETTINGS)
+
+app.start()
 
 
-## -- Options --##
-parser = OptionParser()
-parser.add_option("-u", dest="url",
-                  help="URL to analize", metavar="[URL]")
-parser.add_option("-A",
-                  dest="agent",
-                  metavar="[AGENT]",
-                  help="User-Agent")
-
-(options, args) = parser.parse_args()
-
-## -- Define Host and normalize --##
-
-try:
-    host = options.url
-    if host[len(host) - 1] == '/':
-        host = host[:-1]
-    base_host = host
-    print base_host
-    action_pattern = r"\/\/(.+)\/([a-zA-Z\.\-\/]+)?"
-    action = re.findall(action_pattern, host)
-    print action
-    if (len(action) > 1):
-        if (action[0][1] != ''):
-            base_host = base_host.replace('/' + action[0][1], '')
-except:
-    ##End if not parameters
-    print 'Failed load options'
-    sys.exit(0)
+sys.exit()
 
 
-
-# User agents
 UA = [
     'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36',
