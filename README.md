@@ -1,16 +1,5 @@
 # JACOBO
-Simple webcrawler desarrollado en python.
+webcrawler on python
 
-Jacobo obtiene, enlaces en un sitio web que incluyen:
-- Enlaces externos
-- Archivos css
-- Archivos js
-- Imagenes
-- Links de formularios
-- Correos electronicos
-
-### Uso
-```
-$ python jacobo.py -u http://misitioweb.com
-```
-Se generará el archivo cat.html
+### update 1.0
+main.py - add request and parameters

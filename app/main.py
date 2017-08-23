@@ -1,10 +1,9 @@
 from libs.log import Logging,Error, LogInit
 from libs.parameters import Parameters
 from libs.helper import Url
+from libs.request import Request
+from pprint import pprint
 
-G = {
-    'UA' : 'USER_AGENTS'
-}
 
 class JacoboMain():
     files = {}
@@ -17,8 +16,18 @@ class JacoboMain():
         LogInit()
         ##set:) parameters
         args = Parameters()
-        url = Url(args.options.url)
-        print url.base
+        # URL sended by user
+        url_from_cli = args.options.url
+        url = Url(url_from_cli)
+
+        ##start with request
+        req = Request(self.files, self.settings)
+        #assing url to project
+        req.pull(url.link)
+        ##set parameters
+        opts = args.options
+        req.set_user_agent(opts.user_agent)
+        req.set_random_agent(opts.random_agent)
         
     def set_files(self ,paths):
         self.files = paths
@@ -27,9 +36,9 @@ class JacoboMain():
 
     def start(self):
         try:
-            ##start
+            ##start application
             self.run_app()
-            
         except Exception as e:
+            pass
             Error('Failed: ' + str(e))
 

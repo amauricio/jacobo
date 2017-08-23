@@ -1,4 +1,4 @@
-from optparse import OptionParser
+from optparse import OptionParser, OptionGroup
 
 
 class MyParser(OptionParser):
@@ -22,7 +22,7 @@ class MyParser(OptionParser):
 class Parameters():
     
     help_text = """
-    Jacobo is a tiny webcrawler, easy to use.
+    Jacobo is a tiny webcrawler for test attacks, easy to use.
 
     (e.g) python jacobo.py -u http://mysite.com -d 2 --random-agent -v 3
 
@@ -48,13 +48,21 @@ class Parameters():
         self.parser.add_option("-d", dest="depth",
                         help="Define depth level [1,2,3]", metavar="DEPTH")
 
-        self.parser.add_option("--user-agent", dest="agent",
+        self.parser.add_option("--user-agent", dest="user_agent",
                             help="User-Agent", metavar="AGENT")
 
         self.parser.add_option("--random-agent", action='store_true', default=False, help="Set a random User-Agent" )
 
         self.parser.add_option("-v", dest="verbose",  help=("Define verbose level"), metavar="VERBOSE")
         
+        group = OptionGroup(self.parser, "Attacks",
+                            "Define what kind of attack, jacobo will test")
+        group.add_option("--lang", action="store_true", dest='lang' ,help="Predict what language use.")
+        group.add_option("--admin", action="store_true", dest='admin', help="Search admin page.")
+        group.add_option("--sql", action="store_true",dest='sql', help="SQL Injection.")
+        group.add_option("--xss", action="store_true", dest='xss',help="XSS Injection.")
+        group.add_option("--apache-users", action="store_true",dest='aus', help="Apache users scanner.")
+        self.parser.add_option_group(group)
 
         (self.options, self.args) = self.parser.parse_args()
                     

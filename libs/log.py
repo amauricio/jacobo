@@ -47,8 +47,8 @@ _/ |
 |__/       
 
 @version : 1.1
------ author : xorderexo 
------ twitter: @xorderexo 
+----- author : zh0riam 
+----- twitter: @zh0riam 
 ----- github: http://github.com/amauricio
 ----- web : mauricio.pe
 --------------------------------------------
