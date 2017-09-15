@@ -1,0 +1,21 @@
+version: '3'
+services:
+
+  jacobo_app:
+    build: ./jacobo
+    image: jacobo_app:1.0
+    volumes:
+    - ./jacobo:/app
+    depends_on:
+    - jacobo_db
+  jacobo_db:
+    build: ./database
+    image: jacobo_db:1.0
+    volumes:
+    - ./database/mongodb:/data/db
+
+
+      
+
+  
+    
