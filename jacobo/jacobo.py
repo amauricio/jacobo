@@ -18,20 +18,11 @@ import datetime
 import random
 from cookielib import CookieJar
 import random
-from libs.log import Logging
+from libs.modules.log import Logging
 from app.main import JacoboMain
 
-FILES = {
-    'USER_AGENTS' :'txt/user-agents.txt'
-}
-
-SETTINGS = {
-    'DEFAULT_DEPTH' : 1
-}
 
 app = JacoboMain()
-app.set_files(FILES)
-app.set_settings(SETTINGS)
 
 app.start()
 

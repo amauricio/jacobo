@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repositories>
+  <site url='http://localhost:8080/'>
+    <title>Bumeran</title>
+    <description>Página para buscar empleo en bumeran</description>
+    <lang>es</lang>
+    <country>PE</country>
+    <pattern>
+        <home>http://www.bumeran.com</home>
+        <job>http://www.bumeran.com.pe/empleos/%u.html</job>
+    </pattern>
+  </site>
+</repositories> 

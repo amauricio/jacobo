@@ -24,7 +24,7 @@ class Parameters():
     help_text = """
     Jacobo is a webcrawler for test attacks, easy to use.
 
-    (e.g) python jacobo.py -u http://mysite.com -d 2 --random-agent -v 3
+    (e.g) python jacobo.py -u http://mysite.com
 
     """
     parser = MyParser(usage=help_text)
